@@ -1,8 +1,6 @@
 package com.example.invertedindex.service;
 
-import com.example.invertedindex.model.DocumentEntry;
-import com.example.invertedindex.model.WordEntry;
-import com.example.invertedindex.model.WordEntryID;
+import com.example.invertedindex.model.*;
 import com.example.invertedindex.repository.DocumentRepository;
 import com.example.invertedindex.repository.WordEntryRepository;
 import com.google.common.collect.*;
@@ -10,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class InvertedIndexService {
@@ -22,7 +20,7 @@ public class InvertedIndexService {
     @Autowired
     WordEntryRepository wordEntryRepository;
 
-    HashMultimap<UUID, String> documentEntryCache;
+    Map<UUID, String> documentEntryCache;
     HashMultimap<String, String> wordEntryCache;
 
     @PostConstruct
@@ -30,17 +28,12 @@ public class InvertedIndexService {
     {
         documentEntryCache = documentRepository.findAll()
                 .stream()
-                .collect(Collector.of(HashMultimap::create, (multimap, documentEntry) -> {
-                    multimap.put(documentEntry.getDocumentID(), documentEntry.getDocument());
-                }, (multi1, multi2) -> {
-                    multi1.putAll(multi2);
-                    return multi1;
-                }));
+                .collect(Collectors.toMap(DocumentEntry::getDocumentID, DocumentEntry::getDocument));
 
         wordEntryCache = wordEntryRepository.findAll()
                 .stream()
                 .collect(Collector.of(HashMultimap::create, (multimap, wordEntry) -> {
-                    multimap.put(wordEntry.getWordEntryID().getWord(), wordEntry.getWordEntryID().getDocumentID());
+                    multimap.put(wordEntry.getWordEntryID().getWord().toUpperCase(), wordEntry.getWordEntryID().getDocumentID());
                 }, (multi1, multi2) -> {
                     multi1.putAll(multi2);
                     return multi1;
@@ -49,10 +42,7 @@ public class InvertedIndexService {
 
     public void addDocuments(List<String> documents)
     {
-        documents.forEach(document ->
-        {
-            addDocument(document);
-        });
+        documents.forEach(this::addDocument);
     }
 
     public boolean addDocument(String document) {
@@ -73,5 +63,20 @@ public class InvertedIndexService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public SearchResults getResults(SearchTerms searchTerms) {
+        List<String> documents = searchTerms.getSearchTerms()
+                .stream()
+                .map(String::toUpperCase)
+                .filter(wordEntryCache::containsKey)
+                .map(wordEntryCache::get)
+                .flatMap(Set::stream)
+                .map(UUID::fromString)
+                .filter(documentEntryCache::containsKey)
+                .map(documentEntryCache::get)
+                .collect(Collectors.toList());
+        documents.forEach(System.out::println);
+        return new SearchResults(documents);
     }
 }

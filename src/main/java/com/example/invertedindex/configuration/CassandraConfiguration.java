@@ -1,10 +1,15 @@
 package com.example.invertedindex.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.SchemaAction;
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import com.example.invertedindex.controller.Interceptor;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
 @Configuration
 @EnableCassandraRepositories
@@ -37,4 +42,7 @@ public class CassandraConfiguration extends AbstractCassandraConfiguration {
     public String[] getEntityBasePackages() {
         return new String[]{basePackages};
     }
+
+    @Autowired
+    private Interceptor taxiFareRequestInterceptor;
 }

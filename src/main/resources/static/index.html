@@ -1,0 +1,106 @@
+<html dir="ltr" lang="en-US">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+        body{
+            background: #f2f2f2;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .search {
+            width: 100%;
+            position: relative
+        }
+
+        .searchTerm {
+            float: left;
+            width: 100%;
+            border: 3px solid #00B4CC;
+            padding: 5px;
+            height: 36px;
+            border-radius: 5px;
+            outline: none;
+            color: #9DBFAF;
+        }
+
+        .searchTerm:focus{
+            color: #00B4CC;
+        }
+
+        .searchButton {
+            position: absolute;
+            right: -50px;
+            width: 40px;
+            height: 36px;
+            border: 1px solid #00B4CC;
+            background: #00B4CC;
+            text-align: center;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .container {
+            position : absolute;
+            width: 50%;
+            top: 20%;
+            left: 50%;
+        }
+
+        /*Resize the wrap to see the search bar change!*/
+        .wrap{
+            transform: translate(-50%, -50%);
+            position: relative;
+        }
+
+        .results{
+            transform: translate(-50%, -50%);
+            position: relative;
+        }
+
+        .searchResults {
+            float: left;
+            width: 100%;
+            border: 3px solid #00B4CC;
+            padding: 5px;
+            height: 36px;
+            border-radius: 5px;
+            outline: none;
+            color: #9DBFAF;
+        }
+
+        table
+        {
+            border-collapse: collapse;
+        }
+
+        tr
+        {
+            border: 2px solid #090;
+        }
+
+    </style>
+    <title>Search Engine</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="search.js"></script>
+</head>
+
+<div class="container">
+    <div class="wrap">
+        <form id="search" class="search">
+            <input class="searchTerm" type="text" id="search-query" placeholder="enter search terms...i.e. 'football'" />
+            <button type="submit" class="searchButton" id="btn-search">?</i></button>
+        </form>
+    </div>
+
+    <div class="results" id="results">
+</div>
+
+</div>
+
+</body>
+</html>
